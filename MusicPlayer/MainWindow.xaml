@@ -1,0 +1,42 @@
+﻿<Window x:Class="MusicPlayer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MusicPlayer"
+        mc:Ignorable="d"
+        Title="MediaPlayer" Height="480" Width="640">
+    <Grid>
+        <Grid.Background>
+            <ImageBrush ImageSource="Images/backgrndimg.jpg" Stretch="Fill"></ImageBrush>
+        </Grid.Background>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="360*"/>
+            <RowDefinition Height="120"/>
+        </Grid.RowDefinitions>
+        <MediaElement x:Name="mePlayer" Stretch="Fill" Visibility="Visible" LoadedBehavior="Manual" UnloadedBehavior="Manual" MediaOpened="mePlayer_MediaOpened" Grid.Row="0"
+            />
+        <Button x:Name="playButton" Content="Play" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="50" Grid.Row="1" Click="playButton_Click"/>
+        <Button x:Name="pauseButton" Content="Pause" HorizontalAlignment="Left" Margin="65,10,0,0" VerticalAlignment="Top" Width="50" Grid.Row="1" Click="pauseButton_Click"/>
+        <Slider x:Name="volSlider" Value="10" HorizontalAlignment="Right" Margin="0,22,-6,0" VerticalAlignment="Top" Width="52" Grid.Row="1" ValueChanged="volSlider_ValueChanged" RenderTransformOrigin="0.5,0.5">
+            <Slider.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="-90"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Slider.RenderTransform>
+        </Slider>
+        <TextBlock x:Name="fileChosenTxtBlock" TextAlignment="Center" HorizontalAlignment="Right" Margin="289,10,42,0" TextWrapping="Wrap" Text="Wybrany plik" VerticalAlignment="Top" Width="301" Grid.Row="1" Height="45"/>
+        <Button x:Name="fileDialogButton" Content="Wybierz plik do odtworzenia" HorizontalAlignment="Left" Margin="125,10,0,0" VerticalAlignment="Top" Width="164" Grid.Row="1" Click="fileDialogButton_Click"/>
+        <Button x:Name="muteButton" HorizontalAlignment="Right" Margin="0,62,10,0" VerticalAlignment="Top" Width="18" Height="18" Grid.Row="1" Click="muteButton_Click">
+            <StackPanel>
+                <Image Source="Images/speaker_louder_32.png"></Image>
+            </StackPanel>
+        </Button>
+        <Slider x:Name="timeSlider" HorizontalAlignment="Center" Margin="113,60,44,0" VerticalAlignment="Top" Width="475" Grid.Row="1" ValueChanged="timeSlider_ValueChanged"/>
+        <TextBlock x:Name="mediaTimeBlock" HorizontalAlignment="Left" Margin="10,60,0,0" Grid.Row="1" TextWrapping="Wrap" Text="{Binding Position, ElementName=mePlayer, 
+    StringFormat={}{0:mm}:{0:ss}, FallbackValue=00:00, Mode=OneWay}" VerticalAlignment="Top" TextAlignment="Center" Width="71" Height="22"/>
+    </Grid>
+</Window>
