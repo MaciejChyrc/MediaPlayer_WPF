@@ -66,13 +66,23 @@ namespace MusicPlayer
                 fileDialog.DefaultExt = "*.*";
                 fileDialog.Filter = "All Files (*.*)|*.*|MP3 Files (*.mp3)|*.mp3|MP4 Files (*.mp4)|*.mp4|AVI Files (*.avi)|*.avi";
                 Nullable<bool> result = fileDialog.ShowDialog ();
+                /* Effect of couple of minutes of free time. Untested, likely to rename and relocate it
+                 * in future use.
+                 * Should work as a playlist creator from picked files.
+                List<Uri> fileList = new List<Uri> ();
 
+                foreach (string fileName in fileDialog.FileNames)
+                {
+                    Uri src = new Uri (fileName);
+                    fileList.Add (src);
+                }
+                */
                 if (result == true)
                 {
                     string fileName = fileDialog.FileName;
                     fileChosenTxtBlock.Text = fileName;
                     mePlayer.Close ();
-                    Uri sourcePath = new Uri (fileChosenTxtBlock.Text);
+                    Uri sourcePath = new Uri (fileName);
                     mePlayer.Source = sourcePath;
                     timeSlider.Value = 0;
                     mePlayer.Position = TimeSpan.FromSeconds (timeSlider.Value);
