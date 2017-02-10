@@ -23,7 +23,8 @@ namespace MusicPlayer
     public partial class MainWindow : Window
     {
         private double lastVolSliderValue;
-        DispatcherTimer timer = new DispatcherTimer ();
+        private List<String> fileList = new List<String> ();
+        private DispatcherTimer timer = new DispatcherTimer ();
         public MainWindow ()
         {
             InitializeComponent ();
@@ -62,26 +63,20 @@ namespace MusicPlayer
             try
             {
                 OpenFileDialog fileDialog = new OpenFileDialog ();
+                fileDialog.Multiselect = true;
                 fileDialog.DefaultExt = "*.*";
                 fileDialog.Filter = "All Files (*.*)|*.*|MP3 Files (*.mp3)|*.mp3|MP4 Files (*.mp4)|*.mp4|AVI Files (*.avi)|*.avi";
                 Nullable<bool> result = fileDialog.ShowDialog ();
-                /* Effect of couple of minutes of free time. Untested, likely to rename and relocate it
-                 * in future use.
-                 * Should work as a playlist creator from picked files.
-                List<Uri> fileList = new List<Uri> ();
-
-                foreach (string fileName in fileDialog.FileNames)
-                {
-                    Uri src = new Uri (fileName);
-                    fileList.Add (src);
-                }
-                */
+                //picking files from openfiledialog and putting them in a list + other actions connected with starting a media
                 if (result == true)
                 {
-                    string fileName = fileDialog.FileName;
-                    fileChosenTxtBlock.Text = fileName;
+                    foreach (string fileName in fileDialog.FileNames)
+                    {
+                        fileList.Add (fileName);
+                    }
+                    fileChosenTxtBlock.Text = fileList[0];
                     mePlayer.Close ();
-                    Uri sourcePath = new Uri (fileName);
+                    Uri sourcePath = new Uri (fileList[0]);
                     mePlayer.Source = sourcePath;
                     timeSlider.Value = 0;
                     mePlayer.Position = TimeSpan.FromSeconds (timeSlider.Value);
@@ -115,6 +110,28 @@ namespace MusicPlayer
             TimeSpan ts = mePlayer.NaturalDuration.TimeSpan;
             timeSlider.Maximum = ts.TotalSeconds;
             timeSlider.SmallChange = 1;
+        }
+
+        private void mePlayer_MediaEnded (object sender, RoutedEventArgs e)
+        {
+            //removing string of media that has just ended + picking a new from index 0
+            //added exception when there is no string left in the collection
+            try
+            {
+                fileList.RemoveAt (0);
+                fileChosenTxtBlock.Text = fileList[0];
+                mePlayer.Close ();
+                Uri sourcePath = new Uri (fileList[0]);
+                mePlayer.Source = sourcePath;
+                timeSlider.Value = 0;
+                mePlayer.Position = TimeSpan.FromSeconds (timeSlider.Value);
+                timeSlider.Value = mePlayer.Position.Seconds;
+                mePlayer.Play ();
+            }
+            catch (Exception exc)
+            {
+                MessageBox.Show("Koniec listy.\n" + exc);
+            }    
         }
 
         private void timeSlider_ValueChanged (object sender, RoutedPropertyChangedEventArgs<double> e)
